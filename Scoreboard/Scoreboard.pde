@@ -16,14 +16,13 @@ Minim minim;
 AudioPlayer sound;
 AudioPlayer[] cash;
 AudioPlayer horn;
-
 Movie myFile;
 //Fonts
 PFont font;
 PFont athletic;
+PFont krunch;
 int score = 0;
 Gif boom;
-Explode b1;
 float val;
 //Timers
 float stopTime;
@@ -31,7 +30,7 @@ int wait = 1500;
 int timer = 30000;
 int currentTime;
 int savedTime = 0;
-int shotMade;
+boolean shotMade;
 String[] sayings = {"SHARPSHOOTER", "CASH!", "BANG!","YES!"};
 int index;
 int soundIndex;
@@ -46,6 +45,7 @@ size(1000,1000);
 minim = new Minim(this);
 font = createFont("hemi head bd it.ttf", 288);
 athletic = createFont("MutantAcademyBB.ttf", 100);
+krunch = createFont("krunch.ttf", 150);
 boom = new Gif(this, "blowup.gif");
 boom.play();
 sound = minim.loadFile("punk.mp3");
@@ -56,9 +56,9 @@ cash[1] = minim.loadFile("bang.mp3");
 cash[2] = minim.loadFile("woo.mp3");
 cash[3] = minim.loadFile("allday.mp3");
 
-//println(Serial.list());
-//String portName = Serial.list()[2];
-//myPort = new Serial(this, portName, 9600);
+println(Serial.list());
+String portName = Serial.list()[2];
+myPort = new Serial(this, portName, 9600);
 
 }
 
@@ -69,10 +69,10 @@ imageMode(CENTER);
 smooth();
 textAlign(CENTER);
   //Serial read from Arduino 
-//  if (myPort.available() > 0) { 
-  //  val = myPort.read(); 
+  if (myPort.available() > 0) { 
+    val = myPort.read(); 
     //println(val);
-//}
+}
 
 fill(255,0,0);
 
@@ -83,13 +83,14 @@ fill(255,0,0);
 if (stopTime > millis()){
 image(boom, 0,0);
 textFont(athletic);
+
 text(sayings[index], 0, 200);
 }
 //reset timer
 currentTime = millis();
 
 
-//sound.play();
+sound.play();
 
 //BONUS ROUND!!
 if (currentTime > 15000 && currentTime < 25000){
@@ -97,15 +98,21 @@ scoreIncrement = 50;
 bonus = true;
 }
 if (bonus == true){
-  textFont(athletic);
+  textFont(krunch);
 fill(random(255),random(255),random(255));
 text("BONUS", 0,-300);
 horn.play();
 //horn.loop();
 }
+if (val==1){
+shotMade = true;
+}
+else{
+shotMade=false;
+}
 
 
-state = keyPressed;
+state = shotMade;
 ;
 println(state);
 
